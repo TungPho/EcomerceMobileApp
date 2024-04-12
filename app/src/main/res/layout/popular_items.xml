@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/pop_img"
+            android:layout_width="match_parent"
+            android:layout_height="190dp"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/offers3"
+            app:riv_corner_radius="14dp" />
+
+        <TextView
+            android:id="@+id/pop_name"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/aclonica"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="Popular Products" />
+
+        <TextView
+            android:id="@+id/pop_des"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="description" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ratingbar" />
+
+            <TextView
+                android:id="@+id/pop_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="15dp"
+                android:gravity="center_vertical"
+                android:text="5.0" />
+
+            <TextView
+                android:id="@+id/pop_discount"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="15dp"
+                android:gravity="center_vertical"
+                android:text="Discount 20% Off" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>
