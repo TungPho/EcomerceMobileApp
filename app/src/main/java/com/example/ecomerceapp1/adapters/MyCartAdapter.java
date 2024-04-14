@@ -9,8 +9,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.ecomerceapp1.R;
 import com.example.ecomerceapp1.models.Cart;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,22 +42,85 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.ViewHolder
     @NonNull
     @Override
     public MyCartAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyCartAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.my_cart_item, parent, false));
+        return new MyCartAdapter.ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.my_cart_ver2, parent, false));
     }
 
     //price string, total price: int
     @Override
     public void onBindViewHolder(@NonNull MyCartAdapter.ViewHolder holder, int position) {
         holder.name.setText(cartList.get(position).getProductName());
-        holder.time.setText(cartList.get(position).getCurrentTime());
-        holder.date.setText(cartList.get(position).getCurrentDate());
         holder.quantity.setText(cartList.get(position).getTotalQuantity());
         holder.price.setText(cartList.get(position).getProductPrice());
         holder.totalPrice.setText(String.valueOf(cartList.get(position).getTotalPrice()));
+        Glide.with(context).load(cartList.get(position).getImg_url()).into(holder.productImg);
+
+        int prodPrice = cartList.get(position).getIntPrice();
+
+        //When click on addIcon
+        holder.addIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int quantityTotal = Integer.parseInt(holder.quantity.getText().toString()) + 1;
+                cartList.get(position).setTotalPrice(prodPrice * quantityTotal);
+                cartList.get(position).setTotalQuantity(String.valueOf(quantityTotal));
+                holder.quantity.setText(String.valueOf(quantityTotal));
+                holder.totalPrice.setText(String.valueOf(cartList.get(position).getTotalPrice()) + "/kg");
+
+                //string
+                db.collection("CurrentUser")
+                        .document(auth.getCurrentUser().getUid())
+                        .collection("AddToCart")
+                        .document(holder.name.getText().toString()).update("totalQuantity", holder.quantity.getText().toString());
+                //int
+                db.collection("CurrentUser")
+                        .document(auth.getCurrentUser().getUid())
+                        .collection("AddToCart")
+                        .document(holder.name.getText().toString()).update("totalPrice", cartList.get(position).getTotalPrice()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(context, "updated", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+
+            }
+        });
 
 
+        holder.removeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+                int quantityTotal = Integer.parseInt(holder.quantity.getText().toString()) - 1;
+                if(quantityTotal <= 1){
+                    Toast.makeText(context, "can not be <= 1", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                cartList.get(position).setTotalPrice(prodPrice * quantityTotal);
+                cartList.get(position).setTotalQuantity(String.valueOf(quantityTotal));
+                holder.quantity.setText(String.valueOf(quantityTotal));
+                holder.totalPrice.setText(String.valueOf(cartList.get(position).getTotalPrice()) + "/kg");
 
+                //string
+                db.collection("CurrentUser")
+                        .document(auth.getCurrentUser().getUid())
+                        .collection("AddToCart")
+                        .document(holder.name.getText().toString()).update("totalQuantity", holder.quantity.getText().toString());
+                //int
+                db.collection("CurrentUser")
+                        .document(auth.getCurrentUser().getUid())
+                        .collection("AddToCart")
+                        .document(holder.name.getText().toString()).update("totalPrice", cartList.get(position).getTotalPrice()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(context, "updated", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+        });
         //When click on Delete icon -> Delete that item in cart
         holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,11 +129,11 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.ViewHolder
                 db.collection("CurrentUser").document(auth.getCurrentUser().getUid()).collection("AddToCart").document(cartList.get(position).getDocumentId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             cartList.remove(cartList.get(position));
                             notifyDataSetChanged();
                             Toast.makeText(context, "Item Deleted", Toast.LENGTH_SHORT).show();
-                        }else{
+                        } else {
                             Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -84,19 +150,22 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.ViewHolder
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name, price, date, time, quantity, totalPrice;
+        TextView name, price, quantity, totalPrice;
 
-        ImageView deleteIcon;
+        ImageView deleteIcon, addIcon, removeIcon;
+        ImageView productImg;
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.cart_product_name);
             price = itemView.findViewById(R.id.cart_product_price);
-            date = itemView.findViewById(R.id.cart_product_current_date);
-            time = itemView.findViewById(R.id.cart_product_current_time);
-            quantity = itemView.findViewById(R.id.cart_product_total_quantity);
-            totalPrice = itemView.findViewById(R.id.cart_product_total_price);
-            deleteIcon = itemView.findViewById(R.id.delete_icon);
+            quantity = itemView.findViewById(R.id.cart_product_quantity);
+            productImg = itemView.findViewById(R.id.cart_image);
+            deleteIcon = itemView.findViewById(R.id.delete_item);
+            addIcon = itemView.findViewById(R.id.add_icon);
+            removeIcon = itemView.findViewById(R.id.remove_icon);
+            totalPrice = itemView.findViewById(R.id.total_price);
         }
     }
 }

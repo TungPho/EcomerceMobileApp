@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -30,6 +31,8 @@ import org.w3c.dom.Text;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MyCartsFragment extends Fragment {
 
@@ -41,7 +44,7 @@ public class MyCartsFragment extends Fragment {
     FirebaseAuth auth;
     FirebaseFirestore db;
 
-    TextView total_price_of_all_products;
+    TextView total_price_of_all_products, refresh;
 
     int total_price = 0;
 
@@ -50,7 +53,7 @@ public class MyCartsFragment extends Fragment {
     public MyCartsFragment() {
         // Required empty public constructor
     }
-
+    View cartFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,7 +65,8 @@ public class MyCartsFragment extends Fragment {
         recyclerView = root.findViewById(R.id.my_carts_rec);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         total_price_of_all_products = root.findViewById(R.id.sum_all_product_price);
-        //our list and adater
+        cartFragment = root.findViewById(R.id.cart_fragment);
+        //our list and adapter
         cartList = new ArrayList<>();
         myCartAdapter = new MyCartAdapter(getActivity(), cartList);
         recyclerView.setAdapter(myCartAdapter);
@@ -74,9 +78,8 @@ public class MyCartsFragment extends Fragment {
         db.collection("CurrentUser").document(auth.getCurrentUser().getUid()).collection("AddToCart").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    for(DocumentSnapshot documentSnapshot : task.getResult().getDocuments()){
-
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
                         String documentId = documentSnapshot.getId();
                         Cart cart = documentSnapshot.toObject(Cart.class);
                         cart.setDocumentId(documentId);
@@ -85,10 +88,12 @@ public class MyCartsFragment extends Fragment {
                         myCartAdapter.notifyDataSetChanged();
                     }
                     total_price_of_all_products.setText(String.valueOf(total_price));
+
                 }
             }
         });
 
+        //place order
         buyNowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +102,19 @@ public class MyCartsFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        //refresh
+        cartFragment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                total_price = 0;
+                for (int i = 0; i < cartList.size(); i++) {
+                    total_price += cartList.get(i).getTotalPrice();
+                }
+                total_price_of_all_products.setText(String.valueOf(total_price));
+            }
+        });
+
 
 
 

@@ -27,7 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 
 public class ProductDetailActivity extends AppCompatActivity {
@@ -63,8 +62,8 @@ public class ProductDetailActivity extends AppCompatActivity {
             return insets;
         });
         detailsImage = findViewById(R.id.details_image);
-        plusIcon =  findViewById(R.id.add_item_plus_icon);
-        removeIcon = findViewById(R.id.remove_item_plus_icon);
+        plusIcon = findViewById(R.id.add_item_plus_icon);
+        removeIcon = findViewById(R.id.remove_icon);
         price = findViewById(R.id.details_price);
         rating = findViewById(R.id.details_rating);
         description = findViewById(R.id.details_description);
@@ -89,14 +88,14 @@ public class ProductDetailActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
 
         final Object object = getIntent().getSerializableExtra("product");
-        if(object instanceof ViewAllProductsModel){
+        if (object instanceof ViewAllProductsModel) {
             viewAllProductsModel = (ViewAllProductsModel) object;
         }
 
-        if(viewAllProductsModel != null){
+        if (viewAllProductsModel != null) {
             /// set the details of product by taking the product from view all products
             Glide.with(getApplicationContext()).load(viewAllProductsModel.getImg_url()).into(detailsImage);
-            price.setText("Price: $" +  String.valueOf(viewAllProductsModel.getPrice() + "/kg"));
+            price.setText("Price: $" + String.valueOf(viewAllProductsModel.getPrice() + "/kg"));
             description.setText(viewAllProductsModel.getDescription());
             rating.setText(viewAllProductsModel.getRating());
         }
@@ -104,11 +103,11 @@ public class ProductDetailActivity extends AppCompatActivity {
         plusIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(total_quantity < 10){
+                if (total_quantity < 10) {
                     total_quantity += 1;
                     total_price = viewAllProductsModel.getPrice() * total_quantity;
                     quantity.setText(String.valueOf(total_quantity));
-                }else{
+                } else {
                     Toast.makeText(getApplicationContext(), "You only get to add no more than 10 products at a time!", Toast.LENGTH_SHORT);
                 }
             }
@@ -116,9 +115,9 @@ public class ProductDetailActivity extends AppCompatActivity {
         removeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(total_quantity <= 1){
-                    Toast.makeText(getApplicationContext(), "You remove all the items!", Toast.LENGTH_SHORT);
-                }else{
+                if (total_quantity <= 1) {
+                    Toast.makeText(getApplicationContext(), "You remove all the items!", Toast.LENGTH_SHORT).show();
+                } else {
                     total_quantity -= 1;
                     total_price = viewAllProductsModel.getPrice() * total_quantity;
                     quantity.setText(String.valueOf(total_quantity));
@@ -135,7 +134,8 @@ public class ProductDetailActivity extends AppCompatActivity {
         });
 
     }
-    public void addedToCart(){
+
+    public void addedToCart() {
         String saveCurrentDate, saveCurrentTime;
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("MM dd, yyyy");
@@ -145,20 +145,26 @@ public class ProductDetailActivity extends AppCompatActivity {
         saveCurrentTime = currentTime.format(calendar.getTime());
 
         final HashMap<String, Object> cartMap = new HashMap<>();
-        cartMap.put("productName", viewAllProductsModel.getName());
-        cartMap.put("productPrice", price.getText().toString());
+        cartMap.put("productName", viewAllProductsModel.getName());// string
+        cartMap.put("productPrice", price.getText().toString()); //string
+        cartMap.put("intPrice", viewAllProductsModel.getPrice());// int
         cartMap.put("currentDate", saveCurrentDate);
         cartMap.put("currentTime", saveCurrentTime);
-        cartMap.put("totalQuantity", quantity.getText().toString());
-        cartMap.put("totalPrice", total_price);
+        cartMap.put("totalQuantity", quantity.getText().toString());// string
+        cartMap.put("totalPrice", total_price);//int
+        cartMap.put("img_url", viewAllProductsModel.getImg_url());//string
 
-        db.collection("CurrentUser").document(auth.getCurrentUser().getUid()).collection("AddToCart").add(cartMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentReference> task) {
-                Toast.makeText(ProductDetailActivity.this, "Added to Cart", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+        db.collection("CurrentUser")
+                .document(auth.getCurrentUser().getUid())
+                .collection("AddToCart")
+                .document(viewAllProductsModel.getName()).set(cartMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(ProductDetailActivity.this, "added to cart", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ProductDetailActivity.this, "" + total_price, Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                });
 
 
     }

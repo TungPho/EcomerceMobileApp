@@ -134,7 +134,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/remove_item_plus_icon"
+            android:id="@+id/remove_icon"
             android:layout_width="66dp"
             android:layout_height="56dp"
             android:layout_alignParentTop="true"
@@ -157,7 +157,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.63"
             android:background="@drawable/btn_bg_details"
-            app:layout_constraintStart_toEndOf="@+id/remove_item_plus_icon"
+            app:layout_constraintStart_toEndOf="@+id/remove_icon"
             app:layout_constraintTop_toTopOf="parent" />
 
 

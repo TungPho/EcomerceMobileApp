@@ -27,12 +27,12 @@ public  class HomeActivty extends AppCompatActivity {
         progressBar.setVisibility(View.GONE);
         auth = FirebaseAuth.getInstance();
        // if already login a user
-//        if(auth.getCurrentUser() != null){
-//            progressBar.setVisibility(View.VISIBLE);
-//            startActivity(new Intent(HomeActivty.this, MainActivity.class));
-//            Toast.makeText(HomeActivty.this, "Please Wait", Toast.LENGTH_SHORT).show();
-//            finish();
-//        }
+        if(auth.getCurrentUser() != null){
+            progressBar.setVisibility(View.VISIBLE);
+            startActivity(new Intent(HomeActivty.this, MainActivity.class));
+            Toast.makeText(HomeActivty.this, "Please Wait", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
 
         login_btn.setOnClickListener(new View.OnClickListener() {
