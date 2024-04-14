@@ -1,8 +1,10 @@
 package com.example.ecomerceapp1.ui.my_orders;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,9 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.ecomerceapp1.R;
+import com.example.ecomerceapp1.activities.MainActivity;
+import com.example.ecomerceapp1.activities.ViewsAllActivity;
 import com.example.ecomerceapp1.adapters.MyOrderAdapter;
 import com.example.ecomerceapp1.models.Cart;
 import com.example.ecomerceapp1.models.MyOrderModel;
@@ -38,6 +43,8 @@ public class MyOrdersFragment extends Fragment {
     FirebaseFirestore db;
     FirebaseAuth auth;
 
+    ProgressBar progressBar;
+
     public MyOrdersFragment() {
         // Required empty public constructor
     }
@@ -58,6 +65,21 @@ public class MyOrdersFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(myOrderAdapter);
 
+
+        progressBar = root.findViewById(R.id.progress_bar);
+
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(ViewsAllActivity.this, MainActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         db.collection("CurrentUser").document(auth.getCurrentUser().getUid()).collection("MyOrder").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

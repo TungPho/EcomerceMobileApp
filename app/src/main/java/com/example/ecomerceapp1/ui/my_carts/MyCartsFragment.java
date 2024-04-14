@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.ecomerceapp1.R;
+import com.example.ecomerceapp1.activities.ConfirmOrderActivity;
 import com.example.ecomerceapp1.activities.PlaceOrderActivity;
 import com.example.ecomerceapp1.adapters.MyCartAdapter;
 import com.example.ecomerceapp1.models.Cart;
@@ -97,7 +98,7 @@ public class MyCartsFragment extends Fragment {
         buyNowButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), PlaceOrderActivity.class);
+                Intent intent = new Intent(getContext(), ConfirmOrderActivity.class);
                 intent.putExtra("itemList", (Serializable) cartList);
                 startActivity(intent);
             }

@@ -37,7 +37,6 @@ public class PlaceOrderActivity extends AppCompatActivity {
     FirebaseFirestore db;
     Button back;
     FirebaseDatabase database;
-    User currentUser = null;
 
 
     @Override
@@ -56,48 +55,41 @@ public class PlaceOrderActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         database = FirebaseDatabase.getInstance("https://grocery-store-e0d7c-default-rtdb.asia-southeast1.firebasedatabase.app/");
 
-        database.getReference().child("Users").child(FirebaseAuth.getInstance().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                currentUser = snapshot.getValue(User.class);
+        List<Cart> cartList = (List<Cart>) getIntent().getSerializableExtra("itemList");
+        String username = getIntent().getStringExtra("clientName");
+        String address = getIntent().getStringExtra("address");
+        String phoneNumber = getIntent().getStringExtra("phoneNumber");
+        Toast.makeText(this, username + address + phoneNumber, Toast.LENGTH_SHORT).show();
 
-                Toast.makeText(PlaceOrderActivity.this, currentUser.toString(), Toast.LENGTH_SHORT).show();
-                List<Cart> cartList = (List<Cart>) getIntent().getSerializableExtra("itemList");
-                if (cartList != null) {
-                    for (Cart item : cartList) {
-                        final HashMap<String, Object> cartMap = new HashMap<>();
-                        cartMap.put("productName", item.getProductName());
-                        cartMap.put("productPrice", item.getProductPrice());
-                        cartMap.put("currentDate", item.getCurrentDate());
-                        cartMap.put("currentTime", item.getCurrentTime());
-                        cartMap.put("totalQuantity", item.getTotalQuantity());
-                        cartMap.put("totalPrice", item.getTotalPrice());
-                        cartMap.put("address", currentUser.getAddress());
-                        cartMap.put("username", currentUser.getUsername());
-                        cartMap.put("phoneNumber", currentUser.getPhoneNumber());
-                        cartMap.put("img_url", item.getImg_url());
+        if (cartList != null) {
+            for (Cart item : cartList) {
+                final HashMap<String, Object> cartMap = new HashMap<>();
+                cartMap.put("productName", item.getProductName());
+                cartMap.put("productPrice", item.getProductPrice());
+                cartMap.put("currentDate", item.getCurrentDate());
+                cartMap.put("currentTime", item.getCurrentTime());
+                cartMap.put("totalQuantity", item.getTotalQuantity());
+                cartMap.put("totalPrice", item.getTotalPrice());
+                cartMap.put("address", address);
+                cartMap.put("username", username);
+                cartMap.put("phoneNumber", phoneNumber);
+                cartMap.put("img_url", item.getImg_url());
 
-                        // So if the cart has 3 products, then MyOrder will have 3 products in the 1 order
-                        db.collection("CurrentUser").document(auth.getCurrentUser().getUid()).collection("MyOrder").add(cartMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                Toast.makeText(PlaceOrderActivity.this, "Your Order has been placed!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                // So if the cart has 3 products, then MyOrder will have 3 products in the 1 order
+                db.collection("CurrentUser").document(auth.getCurrentUser().getUid()).collection("MyOrder").add(cartMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        Toast.makeText(PlaceOrderActivity.this, "Your Order has been placed!", Toast.LENGTH_SHORT).show();
                     }
-                }
+                });
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+        }
         //read the address and username
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(PlaceOrderActivity.this, MainActivity.class);
+                startActivity(intent);
             }
         });
     }
