@@ -161,11 +161,8 @@ public class ProductDetailActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(ProductDetailActivity.this, "added to cart", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(ProductDetailActivity.this, "" + total_price, Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 });
-
-
     }
 }

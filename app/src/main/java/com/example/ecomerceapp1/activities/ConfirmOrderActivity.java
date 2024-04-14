@@ -19,12 +19,16 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.ecomerceapp1.R;
 import com.example.ecomerceapp1.models.Cart;
 import com.example.ecomerceapp1.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.Serializable;
 import java.util.List;
@@ -37,6 +41,8 @@ public class ConfirmOrderActivity extends AppCompatActivity {
     ImageView backToCart;
     FirebaseAuth auth;
     FirebaseDatabase database;
+
+    FirebaseFirestore db;
     List<Cart> cartList;
 
     @Override
@@ -49,6 +55,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+        db = FirebaseFirestore.getInstance();
         database = FirebaseDatabase.getInstance("https://grocery-store-e0d7c-default-rtdb.asia-southeast1.firebasedatabase.app/");
         placeOrderButton = findViewById(R.id.place_order_button);
         backToCart = findViewById(R.id.back_to_cart);
@@ -77,14 +84,38 @@ public class ConfirmOrderActivity extends AppCompatActivity {
         placeOrderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(clientName.getText().equals("") || address.getText().equals("") || phoneNumber.getText().equals("")){
+                if (clientName.getText().equals("") || address.getText().equals("") || phoneNumber.getText().equals("")) {
                     Toast.makeText(ConfirmOrderActivity.this, "You must fill in all the informations", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(clientName.getText() == null || address.getText() == null || phoneNumber.getText() == null){
+                if (clientName.getText() == null || address.getText() == null || phoneNumber.getText() == null) {
                     Toast.makeText(ConfirmOrderActivity.this, "You must fill in all the informations", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //Clear the current cart in DB
+
+                db.collection("CurrentUser").document(auth.getCurrentUser().getUid()).collection("AddToCart").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                                Cart cart = doc.toObject(Cart.class);
+                                db.collection("CurrentUser")
+                                        .document(auth.getCurrentUser().getUid())
+                                        .collection("AddToCart")
+                                        .document(doc.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(ConfirmOrderActivity.this, "Cart Cleared", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
+
 
                 Intent intent = new Intent(ConfirmOrderActivity.this, PlaceOrderActivity.class);
                 intent.putExtra("itemList", (Serializable) cartList);

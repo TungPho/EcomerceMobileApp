@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -52,18 +54,25 @@ public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
 
     private Uri profileUri;
-
+    ProgressBar progressBar;
+    ConstraintLayout profileFragment;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
+        profileFragment = root.findViewById(R.id.profile_view);
+        profileFragment.setVisibility(View.GONE);
+
         profileImg = root.findViewById(R.id.profile_img);
         name = root.findViewById(R.id.profile_name);
         email = root.findViewById(R.id.profile_email);
         phoneNumber = root.findViewById(R.id.profile_phone_number);
         address = root.findViewById(R.id.profile_address);
         updateBtn = root.findViewById(R.id.btn_update);
+        progressBar = root.findViewById(R.id.progress_bar);
+
+        progressBar.setVisibility(View.VISIBLE);
 
         auth = FirebaseAuth.getInstance();
         //Firebase
@@ -80,6 +89,8 @@ public class ProfileFragment extends Fragment {
                 phoneNumber.setText(user.getPhoneNumber());
                 name.setText(user.getUsername());
                 Glide.with(getActivity()).load(user.getProfileImg()).into(profileImg);
+                profileFragment.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override

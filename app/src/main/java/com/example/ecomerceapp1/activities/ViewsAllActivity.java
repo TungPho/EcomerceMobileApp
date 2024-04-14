@@ -22,12 +22,14 @@ import com.example.ecomerceapp1.models.PopularModel;
 import com.example.ecomerceapp1.models.ViewAllProductsModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ViewsAllActivity extends AppCompatActivity {
 
@@ -86,6 +88,26 @@ public class ViewsAllActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             //if loaded data
                             ViewAllProductsModel viewAllProduct = document.toObject(ViewAllProductsModel.class);
+                            viewAllProductsModelList.add(viewAllProduct);
+                            viewAllAdapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        Toast.makeText(ViewsAllActivity.this, "Error Getting Data", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+
+        if (Objects.equals(type, "all")) {
+            db.collection("All Products").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(ViewsAllActivity.this, "OK", Toast.LENGTH_SHORT).show();
+                        for (DocumentSnapshot document : task.getResult().getDocuments()) {
+                            //if loaded data
+                            ViewAllProductsModel viewAllProduct = document.toObject(ViewAllProductsModel.class);
+                            viewAllProduct.setDocumentId(document.getId());
                             viewAllProductsModelList.add(viewAllProduct);
                             viewAllAdapter.notifyDataSetChanged();
                         }

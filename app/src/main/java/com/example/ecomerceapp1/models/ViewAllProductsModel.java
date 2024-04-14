@@ -8,19 +8,30 @@ public class ViewAllProductsModel implements Serializable {
     private String rating;
     private String img_url;
     private String type;
+    private String documentId;
 
     private int price;
 
     public ViewAllProductsModel() {
     }
 
-    public ViewAllProductsModel(String name, String description, String rating, String img_url, String type, int price) {
+    public ViewAllProductsModel(String name, String description, String rating, String img_url, String type, int price, String documentId) {
         this.name = name;
         this.description = description;
         this.rating = rating;
         this.img_url = img_url;
         this.type = type;
         this.price = price;
+        this.documentId = documentId;
+
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 
     public String getName() {

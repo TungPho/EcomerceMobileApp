@@ -1,5 +1,7 @@
 package com.example.ecomerceapp1.ui.my_carts;
 
+import static java.lang.String.format;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -88,7 +90,7 @@ public class MyCartsFragment extends Fragment {
                         total_price += cart.getTotalPrice();
                         myCartAdapter.notifyDataSetChanged();
                     }
-                    total_price_of_all_products.setText(String.valueOf(total_price));
+                    total_price_of_all_products.setText("$" +   total_price);
 
                 }
             }
@@ -112,7 +114,7 @@ public class MyCartsFragment extends Fragment {
                 for (int i = 0; i < cartList.size(); i++) {
                     total_price += cartList.get(i).getTotalPrice();
                 }
-                total_price_of_all_products.setText(String.valueOf(total_price));
+                total_price_of_all_products.setText("$" +  total_price);
             }
         });
 
