@@ -99,7 +99,6 @@ public class RegistrationActivity extends AppCompatActivity {
                     User user = new User(usernameInput, emailInput, passwordInput, null, "member");
                     //Get the userId to store in the DB
                     String userId = task.getResult().getUser().getUid();
-                    Toast.makeText(RegistrationActivity.this, userId, Toast.LENGTH_SHORT).show();
                     //This is the realtime DB saving the users in
                     database.getReference().child("Users").child(userId).setValue(user);
 
