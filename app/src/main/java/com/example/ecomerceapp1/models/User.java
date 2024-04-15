@@ -7,6 +7,15 @@ public class User {
     private String profileImg;
     private String phoneNumber;
     private String address;
+    private String role;
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 
     @Override
     public String toString() {
@@ -17,19 +26,21 @@ public class User {
                 ", profileImg='" + profileImg + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 
     public User() {
     }
 
-    public User(String username, String email, String password, String profileImg) {
+    public User(String username, String email, String password, String profileImg, String role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.profileImg = profileImg;
         this.address = "";
         this.phoneNumber = "";
+        this.role = role;
     }
 
     public String getPhoneNumber() {

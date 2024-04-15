@@ -12,6 +12,8 @@ public class MyOrderModel {
     String username;
     String img_url;
 
+    String documentId;
+
     public MyOrderModel() {
     }
 
@@ -31,7 +33,7 @@ public class MyOrderModel {
                 '}';
     }
 
-    public MyOrderModel(String totalQuantity, int totalPrice, String productName, String productPrice, String address, String currentDate, String currentTime, String phoneNumber, String username, String img_url) {
+    public MyOrderModel(String totalQuantity, int totalPrice, String productName, String productPrice, String address, String currentDate, String currentTime, String phoneNumber, String username, String img_url, String documentId) {
         this.totalQuantity = totalQuantity;
         this.totalPrice = totalPrice;
         this.productName = productName;
@@ -42,6 +44,15 @@ public class MyOrderModel {
         this.phoneNumber = phoneNumber;
         this.username = username;
         this.img_url = img_url;
+        this.documentId = documentId;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 
     public int getTotalPrice() {

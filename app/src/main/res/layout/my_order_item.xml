@@ -4,10 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
     android:layout_marginBottom="5dp"
-    app:cardCornerRadius="30dp">
+    >
 
 
     <LinearLayout
@@ -20,15 +18,17 @@
 
         <ImageView
             android:id="@+id/my_order_image"
-            android:layout_width="124dp"
-            android:layout_height="124dp"
+            android:layout_width="128dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/border"
             android:src="@drawable/fruits"
             tools:layout_editor_absoluteX="70dp"
             tools:layout_editor_absoluteY="170dp" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="242dp"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/bentonsansmedium"
                 android:text="Spacy Fresh Crab"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -58,7 +58,7 @@
                 android:fontFamily="@font/bentonsansmedium"
                 android:text="$ 30"
                 android:textColor="#53E88B"
-                android:textSize="25sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -66,29 +66,29 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/bentonsansmedium"
                 android:text="Delivery is on the way"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/my_order_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Address: "
-                android:textSize="20sp"
                 android:fontFamily="@font/bentonsansmedium"
-                />
+                android:text="Address: "
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/my_order_client_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Client's name: "
                 android:fontFamily="@font/bentonsansmedium"
-                android:textSize="20sp"
-                />
+                android:text="Client's name: "
+                android:textSize="15sp" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/cancel_delivery_button"
+                android:layout_width="176dp"
+                android:layout_height="31dp"
+                android:layout_gravity="center"
                 android:background="@drawable/button_original"
                 android:text="Cancel" />
 

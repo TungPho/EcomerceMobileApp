@@ -96,7 +96,7 @@ public class RegistrationActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
-                    User user = new User(usernameInput, emailInput, passwordInput, null);
+                    User user = new User(usernameInput, emailInput, passwordInput, null, "member");
                     //Get the userId to store in the DB
                     String userId = task.getResult().getUser().getUid();
                     Toast.makeText(RegistrationActivity.this, userId, Toast.LENGTH_SHORT).show();
