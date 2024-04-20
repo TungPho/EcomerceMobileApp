@@ -1,5 +1,8 @@
 package com.example.ecomerceapp1.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
@@ -8,6 +11,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.ecomerceapp1.R;
+import com.example.ecomerceapp1.broadcastReceiver.InternetReceiver;
 import com.example.ecomerceapp1.models.User;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+    BroadcastReceiver broadcastReceiver = null;
 
     FirebaseDatabase database;
 
@@ -42,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance("https://grocery-store-e0d7c-default-rtdb.asia-southeast1.firebasedatabase.app/");
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        broadcastReceiver = new InternetReceiver();
+        internetStatus();
         setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -81,6 +87,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+    public void internetStatus(){
+        registerReceiver(broadcastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(broadcastReceiver);
     }
 
     @Override
