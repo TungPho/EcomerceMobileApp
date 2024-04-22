@@ -1,7 +1,9 @@
 package com.example.ecomerceapp1.activities;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.UserDictionary;
 import android.view.View;
 import android.widget.Toast;
 
@@ -117,7 +119,6 @@ public class ViewsAllActivity extends AppCompatActivity {
                 }
             });
         }
-
 
     }
 }

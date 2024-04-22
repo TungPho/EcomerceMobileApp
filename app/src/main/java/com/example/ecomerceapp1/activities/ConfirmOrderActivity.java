@@ -36,7 +36,7 @@ import java.util.List;
 public class ConfirmOrderActivity extends AppCompatActivity {
 
 
-    Button placeOrderButton;
+    Button placeOrderButton, selectLocation;
     EditText clientName, address, phoneNumber;
     ImageView backToCart;
     FirebaseAuth auth;
@@ -58,11 +58,26 @@ public class ConfirmOrderActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         database = FirebaseDatabase.getInstance("https://grocery-store-e0d7c-default-rtdb.asia-southeast1.firebasedatabase.app/");
         placeOrderButton = findViewById(R.id.place_order_button);
+        selectLocation = findViewById(R.id.button_select_location);
         backToCart = findViewById(R.id.back_to_cart);
         clientName = findViewById(R.id.confirm_client_name);
         address = findViewById(R.id.confirm_address);
         phoneNumber = findViewById(R.id.confirm_phone_number);
         auth = FirebaseAuth.getInstance();
+
+
+        Intent intent = getIntent();
+        String addressGoogle = intent.getStringExtra("addressGoogle");
+        if(addressGoogle != null){
+            address.setText(addressGoogle);
+        }
+
+        selectLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ConfirmOrderActivity.this, GoogleMapActivity.class));
+            }
+        });
 
         database.getReference().child("Users").child(auth.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -71,7 +86,9 @@ public class ConfirmOrderActivity extends AppCompatActivity {
                         User currentUser = snapshot.getValue(User.class);
                         cartList = (List<Cart>) getIntent().getSerializableExtra("itemList");
                         clientName.setText(currentUser.getUsername());
-                        address.setText(currentUser.getAddress());
+                        if(addressGoogle == null){
+                            address.setText(currentUser.getAddress());
+                        }
                         phoneNumber.setText(currentUser.getPhoneNumber());
                     }
 
